@@ -51,6 +51,18 @@
                                 <asp:CompareValidator runat="server" ControlToCompare="Password" ControlToValidate="ConfirmPassword"
                                      CssClass="field-validation-error" Display="Dynamic" ErrorMessage="The password and confirmation password do not match." />
                             </li>
+                                        <li>
+                                <asp:Label ID="Label1" runat="server" AssociatedControlID="Question">Security Question</asp:Label>
+                                <asp:TextBox runat="server" ID="Question"  />
+                                <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" ControlToValidate="Question"
+                                    CssClass="field-validation-error" ErrorMessage="The Security Question is required." />
+                            </li>
+                                   <li>
+                                <asp:Label ID="Label2" runat="server" AssociatedControlID="Answer">Security Answer</asp:Label>
+                                <asp:TextBox runat="server" ID="Answer"  />
+                                <asp:RequiredFieldValidator ID="RequiredFieldValidator2" runat="server" ControlToValidate="Answer"
+                                    CssClass="field-validation-error" ErrorMessage="The Security Answer is required." />
+                            </li>
                         </ol>
                         <asp:Button runat="server" CommandName="MoveNext" Text="Register" />
                     </fieldset>

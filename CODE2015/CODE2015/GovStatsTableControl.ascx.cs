@@ -13,13 +13,11 @@ namespace CODE2015
     {
         private string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["ApplicationServices"].ConnectionString;
         private string sqlProcGetLabourForceSurveyEstimates = "[GetLabourForceSurveyEstimates]";
+        private string sqlProcGetRegionID = "[GetGeoRegionID]";
 
-
-        public string GeoRegionID { get { return (HiddenFieldRegionID.Value); } set { HiddenFieldRegionID.Value = value; } }
+        public string GeoRegion { get { return (HiddenFieldRegion.Value); } set { HiddenFieldRegion.Value = value; } }
         public string City { get { return (HiddenFieldCity.Value); } set { HiddenFieldCity.Value = value; } }
 
-        public delegate void UsersUpdatedEventHandler(object sender, EventArgs e);
-        public event UsersUpdatedEventHandler UsersUpdated;
 
         /// <summary>
         /// 
@@ -30,8 +28,8 @@ namespace CODE2015
         {
             if (!IsPostBack)
             {
-         
-
+                TextBoxStartDate.Text = "1/01/2000";
+                TextBoxEndDate.Text = "1/01/2010";
             }
         }
 
@@ -42,20 +40,19 @@ namespace CODE2015
         {
             DataTable items = new DataTable();
             SqlConnection sqlConnection = new SqlConnection(sqlConnectString);
-            int geoRegionID = int.Parse(HiddenFieldRegionID.Value);
-            int characteristicID = 0;
-            bool seasonallyAdjusted = false;
 
        //     try
        //     {
                 sqlConnection.Open();
                 SqlCommand cmd = new SqlCommand(sqlProcGetLabourForceSurveyEstimates, sqlConnection);
                 cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.Add(new SqlParameter("@GeoRegionID", 6));
-              //  cmd.Parameters.Add(new SqlParameter("@City", City));
+                cmd.Parameters.Add(new SqlParameter("@GeoRegionID", getGeoRegionID(HiddenFieldRegion.Value)));
+                cmd.Parameters.Add(new SqlParameter("@City", HiddenFieldCity.Value));
              //   cmd.Parameters.Add(new SqlParameter("@CharacteristicID", characteristicID));
-                cmd.Parameters.Add(new SqlParameter("@SeasonallyAdjusted", seasonallyAdjusted));
-
+                cmd.Parameters.Add(new SqlParameter("@SeasonallyAdjusted", CheckBoxSeasonalAdjust.Checked));
+            cmd.Parameters.Add(new SqlParameter("@BeginningDate", DateTime.Parse(TextBoxStartDate.Text)));
+            cmd.Parameters.Add(new SqlParameter("@EndingDate", DateTime.Parse(TextBoxEndDate.Text)));
+            
                 // create data adapter
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 // this will query your database and return the result to your datatable
@@ -70,9 +67,51 @@ namespace CODE2015
       //      {
 
       //      }
-
+            
 
         }
+
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private int getGeoRegionID(string regionIn)
+        {
+            int id = 0;
+            DataTable items = new DataTable();
+            SqlConnection sqlConnection = new SqlConnection(sqlConnectString);
+
+                 try
+                 {
+            sqlConnection.Open();
+            SqlCommand cmd = new SqlCommand(sqlProcGetRegionID, sqlConnection);
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.Add(new SqlParameter("@RegionIn", regionIn));
+
+            // create data adapter
+            SqlDataAdapter da = new SqlDataAdapter(cmd);
+            // this will query your database and return the result to your datatable
+            da.Fill(items);
+            sqlConnection.Close();
+            da.Dispose();
+
+            id = (int)items.Rows[0][0];
+                  }
+                 catch (Exception e)
+                  {
+
+                  }
+            return (id);
+
+        }
+
+        protected void ButtonRefresh_Click(object sender, EventArgs e)
+        {
+            LoadLabourForceSurveyEstimates();
+        }
+
+      
 
 
     }

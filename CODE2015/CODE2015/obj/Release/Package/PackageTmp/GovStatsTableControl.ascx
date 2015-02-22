@@ -1,26 +1,35 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="GovStatsTableControl.ascx.cs" Inherits="CODE2015.GovStatsTableControl" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="GovStatsTableControl.ascx.cs" Inherits="CODE2015.GovStatsTableControl" ClientIDMode="AutoID" %>
 
 
-<asp:HiddenField ID="HiddenFieldRegionID" runat="server" />
-<asp:HiddenField ID="HiddenFieldCity" runat="server" />
+<asp:HiddenField ID="HiddenFieldRegion" runat="server" ClientIDMode="Static" />
+<asp:HiddenField ID="HiddenFieldCity" runat="server" ClientIDMode="Static" />
 
 <style>
     
 
 </style>
-
+<asp:UpdatePanel ID="UpdatePanel1" runat="server"><ContentTemplate>
  <div  style="margin-bottom:20px;position:relative;width:100%;height:100%">
                 
      <div class="tabInnerHeading">
          <div style="height:auto;margin-left:5px;margin-right:5px; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #0000FF;">
              <div style="float: left;padding-bottom:3px;width:400px;font-size:19px;">Government Employment Statistics for:</div>
-             <div style="float: left;border-style: solid; border-width: 1px; border-color: #EAEAEA #EAEAEA #A6A6A0 #EAEAEA; background-color:#EBFFDF;padding-right:40px;">
-             
-                 <asp:Label ID="LabelStatsLocation" runat="server" Text="" ClientIDMode="Static"></asp:Label>
+             <div style="float: left;border-style: solid; border-width: 1px; border-color: #EAEAEA #EAEAEA #A6A6A0 #EAEAEA; background-color:#EBFFDF;padding-right:0px;">
+                 <asp:TextBox ID="TextBoxStatsLocation" Width="410" runat="server" ClientIDMode="Static" ReadOnEBFFDFly="True" BackColor="#EBFFDF" BorderColor="#EBFFDF"></asp:TextBox>
+
                  </div>
              <div class="spacer" style="clear: both;"></div>
+             <div>
+                 <div style="float: left;">Seasonally Adjusted <asp:CheckBox ID="CheckBoxSeasonalAdjust" runat="server" Text=""    ClientIDMode="Static" /></div>
+                 <div style="float: left;margin-left:20px">Start Date:<asp:TextBox ID="TextBoxStartDate" runat="server" Width="120" ClientIDMode="Static"></asp:TextBox>
+                 End Date:<asp:TextBox ID="TextBoxEndDate" runat="server" Width="120" ClientIDMode="Static"></asp:TextBox></div>
+                
+                 <asp:LinkButton style="color:white;" ID="LinkButtonRefresh" ClientIDMode="Static" OnClientClick="statsRefresh();" OnClick="ButtonRefresh_Click" runat="server" CssClass="badge">Refresh</asp:LinkButton>
+             <div class="spacer" style="clear: both;">
+             </div>
          </div>
-                 
+                  <ajaxToolkit:CalendarExtender ID="CalendarExtender1" runat="server"  TargetControlID="TextBoxStartDate" DefaultView="Months"></ajaxToolkit:CalendarExtender>
+         <ajaxToolkit:CalendarExtender ID="CalendarExtender2" runat="server" TargetControlID="TextBoxEndDate" DefaultView="Months"></ajaxToolkit:CalendarExtender>
         
      </div>
     <table id="tableStats">
@@ -38,28 +47,15 @@
                 <tr>
                     <td><%# DataBinder.Eval(Container.DataItem, "Characteristic") %> </td>
                     <td><%# DataBinder.Eval(Container.DataItem, "Value") %></td>
-                    <td><%# DataBinder.Eval(Container.DataItem, "RefDate") %></td>
+                    <td><%# DataBinder.Eval(Container.DataItem, "RefDate", "{0:MM/dd/yyyy}") %></td>
                 </tr>
             </ItemTemplate>
 
 
 
         </asp:Repeater>
-             <tr>
-                    <td>Persons Employed</td>
-                    <td>?</td>
-                    <td>?</td>
-                </tr>
-            <tr>
-                    <td>Average Wage</td>
-                    <td>?</td>
-                    <td>?</td>
-                </tr>
-            <tr>
-                    <td>Unemployment Rate</td>
-                    <td>?</td>
-                    <td>?</td>
-                </tr>
+           
+
         </tbody>
 
 
@@ -78,5 +74,7 @@
 
     </div>
   
+     </div>
+    </ContentTemplate>
 
- 
+</asp:UpdatePanel>

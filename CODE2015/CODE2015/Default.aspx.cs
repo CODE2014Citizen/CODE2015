@@ -21,8 +21,8 @@ namespace CODE2015
 
         protected void Button1_Click(object sender, EventArgs e)
         {
-            GovStatsTableControl.GeoRegionID = "1";
             GovStatsTableControl.LoadLabourForceSurveyEstimates();
+        
         }
     }
 }

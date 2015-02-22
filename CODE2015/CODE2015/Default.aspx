@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Default.aspx.cs" Inherits="CODE2015._Default" ClientIDMode="Predictable" %>
+﻿<%@ Page Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Default.aspx.cs" Inherits="CODE2015._Default" ClientIDMode="AutoID" %>
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
 <%@ Register Src="~/GovStatsTableControl.ascx" TagPrefix="uc1" TagName="GovStatsTableControl" %>
@@ -62,7 +62,7 @@
 
 
 </style>
-        <asp:UpdatePanel ID="UpdatePanel1" runat="server" UpdateMode="Conditional"><ContentTemplate>
+        <asp:UpdatePanel ID="UpdatePanel1" runat="server" UpdateMode="Always"><ContentTemplate>
         <ajaxToolkit:TabContainer ID="TabContainer1" runat="server" 
         OnClientActiveTabChanged="ClientFunction" 
         CssClass="ajax__tab_CODE-theme" TabIndex="1" ActiveTabIndex="2">
@@ -79,7 +79,7 @@
        </ajaxToolkit:TabPanel>
             <ajaxToolkit:TabPanel ID="TabPanelStats" runat="server" HeaderText="Work Stats">
         <ContentTemplate>
-            <uc1:GovStatsTableControl runat="server" ID="GovStatsTableControl" />
+            <uc1:GovStatsTableControl runat="server" ID="GovStatsTableControl" ClientIDMode="Static" />
     
         </ContentTemplate>
        </ajaxToolkit:TabPanel>
@@ -90,12 +90,12 @@
             </ContentTemplate>
             <Triggers>
                 <asp:AsyncPostBackTrigger ControlID="ButtonAddressChange" />
-
+          
             </Triggers>
 
         </asp:UpdatePanel>
 
-      
+       
 
     </div>
                 </article></div>
@@ -113,19 +113,24 @@
 
     	<script src="https://maps.googleapis.com/maps/api/js?key=&amp;sensor=false&amp;extension=.js"></script> 
     <script src="/Scripts/GoogleMap.js"></script>
-
+    <script src="/Scripts/ParterInWork.js"></script>
        <script type="text/javascript">
 
            $(document).ready(function () {
 
-               var pTable = $('#tableStats').dataTable()
+               var pTable = $('#tableStats').dataTable({
+                   "order": [[2, "desc"]]
+               });
            });
 
 
            Sys.WebForms.PageRequestManager.getInstance().add_endRequest(EndRequestHandler);
            function EndRequestHandler(sender, args) {
                if (args.get_error() == undefined) {
-                   pTable = $('#tableStats').DataTable();
+                   pTable = $('#tableStats').DataTable({
+                       "order": [[2, "desc"]]
+                   });
+                   $("#ButtonRefresh").click(statsRefresh);
                }
            }
 
@@ -136,6 +141,7 @@
             $("#TextBoxLocation").focusout(
     function () {
         $(this).toggleClass("active", false);
+        statsRefresh();
     }
     );
 
@@ -148,7 +154,7 @@
                 return true;
             };
 
-            
+
     </script>
 
        </asp:Content>
